@@ -1,0 +1,364 @@
+\documentclass[10pt,unicode]{beamer}
+\usepackage{cmap}
+\usepackage[T2A]{fontenc}
+\usepackage[cp1251]{inputenc}
+\usepackage[english, russian]{babel}
+\usepackage{amsmath,mathrsfs,amsfonts,amssymb, mathtools}
+\usepackage{graphicx, epsfig}
+\usepackage{subfig}
+\usepackage[noend]{algorithmic}
+\newcommand{\argmin}{\mathop{\rm arg\,min}\limits}
+\newcommand{\argmax}{\mathop{\rm arg\,max}\limits}
+\usepackage{setspace}
+\usepackage{multirow}
+\captionsetup{labelformat=empty}
+\usepackage{wrapfig}
+\usepackage{array}
+\usepackage{multirow}
+%\usepackage{fontspec}
+
+\usepackage{color, colortbl}
+\definecolor{lightRed}{RGB}{240, 170, 150}
+\definecolor{lightGreen}{RGB}{170, 230, 150}
+\definecolor{lightYellow}{RGB}{240, 230, 180}
+
+\newcommand{\hchi}{\hat{\boldsymbol{\chi}}}
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\hx}{\hat{x}}
+\newcommand{\hy}{\hat{y}}
+
+\def\algorithmicrequire{\textbf{\textcolor[rgb]{0.00,0.00,1.00}{Вход:}}}
+\def\algorithmicensure{\textbf{\textcolor[rgb]{0.00,0.00,1.00}{Выход:}}}
+
+\usepackage{changepage}
+\usefonttheme{professionalfonts}
+%\usepackage{newtxtext,newtxmath}
+\usepackage{bookman}
+%\usefonttheme{bookman}
+
+\usetheme{Warsaw}%{Singapore}%{Warsaw}%{Warsaw}%{Darmstadt}
+\usecolortheme{sidebartab}
+\setbeamertemplate{footline}[author]
+\expandafter\def\expandafter\insertshorttitle\expandafter{%
+	\insertshorttitle\hfill%
+	\insertframenumber\,/\,\inserttotalframenumber}
+
+\definecolor{beamer@blendedblue}{RGB}{125,125,255}
+\graphicspath{{../pics/}}
+% отключить клавиши навигации
+\setbeamertemplate{navigation symbols}{}
+%----------------------------------------------------------------------------------------------------------
+\title[Маркирование текстовых документов]{Исследование и разработка методов маркирования текстовых документов}
+\author{Якушев Алексей}
+\date{25 июня 2020г.}
+\institute[МФТИ]{Московский физико-технический институт \\
+	Физтех-школа прикладной математики и информатики\\
+	Кафедра системного программирования
+	\vspace{0.3cm} \\
+	Научный руководитель к. т. н. Ю.\,В.\,Маркин
+}
+
+\date{
+	Москва,	2020\,г.
+}
+
+%----------------------------------------------------------------------------------------------------------
+\begin{document}
+%1----------------------------------------------------------------------------------------------------------
+\begin{frame}
+%\thispagestyle{empty}
+\titlepage
+\end{frame}
+%2-----------------------------------------------------------------------------------------------------
+\begin{frame}{Расследование утечек конфиденциальной информации}
+\normalsize
+\begin{block}{Data Leakage Prevention}
+\normalsize
+Data Leakage Prevention (DLP) – совокупность технологий предотвращения и/или расследования утечек данных.
+
+\end{block}
+\begin{block}{Проблема}
+\normalsize
+Необходимо расследовать утечки конфиденциальных текстовых документов, вызванные фотографированием экрана и последующей публикацией фотографий в публичных источниках.  
+\end{block}
+\begin{block}{Решение}
+\normalsize
+Встраивать идентификатор пользователя устройства в изображение документа, выводимого на экран. Встраивание идентификатора пользователя в изображение относится к технологии внедрения цифровых водяных знаков (ЦВЗ).
+\end{block}
+
+\end{frame}
+%3----------------------------------------------------------------------------------------------------------
+\begin{frame}{Общие сведения о ЦВЗ}
+\begin{figure}[h]
+		
+		\centering
+		
+		\includegraphics[width=0.72\linewidth]{simple_scheme3.png}
+		
+		\label{fig:scheme}
+		
+	\end{figure}
+\begin{minipage}[h]{0.48\linewidth}
+\begin{block}{\footnotesize Сценарии использования ЦВЗ}
+
+\begin{itemize}
+\item \small screen-cam\\
+\footnotesize Фотографирование изображения на экране
+\item \small print-scan\\
+\footnotesize Сканирование распечатанного изображения
+\item \small print-cam\\
+\footnotesize Фотографирование распечатанного изображения
+\end{itemize}
+
+\end{block}
+\end{minipage}
+\hfill
+\begin{minipage}[h]{0.48\linewidth}
+\begin{block} {\footnotesize Атаки на ЦВЗ в сценарии screen-cam}
+\vspace{0.20cm}
+\begin{spacing}{0.8}
+\begin{itemize}
+\small
+\item Расположение камеры относительно экрана
+\item Фокусировка камеры
+\item Эффект муара
+\item Неравномерная яркость на фотографии
+\item Сжатие фотографии
+\end{itemize}
+\end{spacing}
+\end{block}
+\end{minipage}
+\end{frame}
+%4----------------------------------------------------------------------------------------------------------
+\begin{frame}{Существующие решения}
+\begin{block}{Методы маркирования текстовых документов}
+\begin{itemize}
+\small
+\item Изменение длины пробелов между словами.
+Биты кодируются соотношением суммарной длины половин пробелов в строке.\\
+\tiny\textrm{\textit{Zou D., Shi Y. «Formatted Text Document Data Hiding Robust to Printing, Copying and Scanning», 2005}}
+\item \small Слова в тексте заменяются синонимами в зависимости от кодируемого бита. Корректность замены проверяется с помощью Google n-gram corpus.\\
+\tiny\textrm{\textit{Chang C.-Y., Clark S. «Practical Linguistic Steganography using Contextual Synonym Substitution and a Novel Vertex Coding Method», 2014}}
+
+\item \small Добавление двух симметричных групп пикселей к буквам. Расстояние между группами кодируют бит. \\
+\tiny\textrm{\textit{Varna A.L., Rane S. «Data hiding in hard-copy text documents robust to print, scan and photocopy operations», 2009}}
+
+\end{itemize}
+\end{block}
+\begin{block}{Методы маркирования, устойчивые к атакам сценария screen-cam}
+\begin{itemize}
+\small
+\item \small ЦВЗ внедряется в домен ДКП областей, задаваемых ключевыми точками, полученными с помощью алгоритма I-SIFT.\\ 
+\tiny\textrm{\textit{Fang H., Zhang W.«Screen-Shooting Resilient Watermarking», 2019}}
+\item \small Изменение яркости областей на экране. Биты кодируются уменьшением/увеличением яркости круговых областей.\\ 
+\tiny\textrm{\textit{Gugelmann D., Sommer D.«Screen watermarking for data theft investigation and attribution», 2018}}
+\end{itemize}
+\end{block}
+\end{frame}
+%5--------------------------------------------------------------
+\begin{frame}{Постановка задачи}
+\large
+Разработать и реализовать метод маркирования текстовых документов, отображаемых на экране монитора, а также метод извлечения ЦВЗ с фотографии экрана. Метод должен удовлетворять требованиям:
+\begin{itemize}
+\item Незаметность для пользователя устройства
+\item Встраивание в режиме реального времени
+\item Независимость от формата файла докумета
+\item Устойчивость к атакам сценария screen-cam
+
+\item Работа в режиме слепого извлечения (без оригинала документа)
+\end{itemize}
+\end{frame}
+%6--------------------------------------------------------------
+\begin{frame}{Разработанный подход к маркированию документов}
+\begin{itemize}
+\item ЦВЗ представляет собой шаблон, состоящий из прямоугольных областей разной яркости, называемых маркерами
+\begin{itemize}
+\item Светлые маркеры кодируют бит «0», темные --- «1»
+\item Кодирующие маркеры чередуются с промежуточными для упрощения извлечения ЦВЗ
+\item В начало, середину и конец шаблона встраиваются маркеры, состоящие из двух частей. Эти маркеры позволяют определить положение шаблона при извлечении ЦВЗ
+\item На шаблон накладывается фильтр Гаусса для сглаживания переходов между маркерами, что снижает заметность ЦВЗ
+\end{itemize}
+\item Шаблон отображается при помощи частично прозрачного окна, лежащего поверх остальных окон
+\item Шаблон встраивается в области межстрочных интервалов нижележащих окон
+\end{itemize}
+\begin{figure}[h]
+
+\flushleft{\includegraphics[width=1\linewidth]{template.png}}
+
+\label{fig:template}
+\end{figure}
+
+
+\end{frame}
+%7--------------------------------------------------------------
+\begin{frame}{Разработанный подход к маркированию документов}
+ \begin{minipage}[h]{0.48\linewidth}
+\begin{block}{Алгоритм встраивания ЦВЗ}
+
+\begin{enumerate}
+\small
+\item Создание снимка экрана
+\item Очистка снимка экрана от предыдущей цифровой метки
+\item Определение частей окон, видимых пользователем
+\item Определение областей с текстом
+\item Определение областей межстрочных интервалов
+\item Генерация шаблона яркости, соответствующего  внедряемой информации
+\item Встраивание шаблона на оверлей в области межстрочных интервалов маркируемого текста.
+
+\end{enumerate}
+
+\end{block}
+\end{minipage}
+\hfill
+\begin{minipage}[h]{0.48\linewidth}
+\begin{block} {Алгоритм извлечения ЦВЗ}
+\vspace{0.05cm}
+\begin{enumerate}
+\small
+\item Коррекция перспективы и обрезка фотографии
+\item Определение областей с текстом
+\item Определение областей межстрочных интервалов
+\item Удаление из межстрочных интервалов фрагментов букв
+\item Определение наличия ЦВЗ в межстрочных интервалах
+\item Извлечение ЦВЗ из межстрочных интервалов
+\item Объединение меток, извлеченных из разных межстрочных интервалов и текстовых областей.
+
+\end{enumerate}
+
+\end{block}
+\end{minipage}
+\end{frame}
+%8-------------------------------------------------------------------
+%\begin{changemargin}{-1cm}{-1cm}
+\begin{frame}{Результаты работы алгоритма встраивания ЦВЗ}
+
+\begin{adjustwidth}{-0.9cm}{-0.9cm}
+
+Маркеры цифровой метки могут быть встроены с разной непрозрачностью (opacity).
+Повышение непрозрачности маркеров делает ЦВЗ более устойчивым к атакам, но в то же время ведет к большей заметности метки.
+\begin{itemize}
+\item Непрозрачность 0\% --- цвет маркеров совпадает с цветом фона
+\item Непрозрачность 100\% --- пользователь видит на экране маркеры черного и белого цвета
+\end{itemize}
+\begin{figure}[h]
+\begin{minipage}[h]{0.495\linewidth}
+\centering
+\center{\includegraphics[width=1.0\linewidth]{003.jpg}} \\ \small Непрозрачность маркеров 3\%
+
+\end{minipage}
+\begin{minipage}[h]{0.495\linewidth}
+\center{\includegraphics[width=1.0\linewidth]{010.jpg}} \\ \small Непрозрачность маркеров 10\%
+\end{minipage}
+%\caption{Пример коррекции перспективы и обрезки фотографии %экрана}
+\label{fig:screenshot}
+\end{figure}
+\end{adjustwidth}
+\end{frame}
+%\end{changemargin}
+%9---------------------------------------------
+\begin{frame}{Результаты работы алгоритма извлечения ЦВЗ}
+\begin{block}
+
+\footnotesize
+Извлекаемое значение k-го бита сообщения зависит от яркости k-го кодирующего маркера.
+\begin{itemize}
+\item $GS_k$ --- оценка отклонения яркости маркера от среднего значения яркости в межстрочном интервале
+\item $CS_k$ --- оценка выпуклости функции яркости около положения кодирующего маркера в межстрочном интервале 
+\end{itemize}
+Тогда общая оценка яркости кодирующего маркера:
+$$S_k = GS_k + \alpha \cdot CS_k,\ \alpha > 0$$
+\end{block}
+\begin{block}
+
+\footnotesize
+Значение бита $m_k,\ k \in[1,N]$, соответствующего k-му кодирующему маркеру, вычисляется как: 
+$$m_k = \begin{cases}0, & \text{если }S_k > 0;\\1, &\text{иначе.} \end{cases}$$
+$|S_k|$ характеризует степень уверенности в извлеченном значении.
+\end{block}
+\begin{block}
+
+\footnotesize
+Bit Error Rate (BER) позволяет оценить успешность извлечения ЦВЗ. 
+$$BER=\frac{\text{\{число неверно извлеченных бит цифровой метки\}}}{\text{\{общее число бит цифровой метки\}}}\cdot 100\%$$
+\end{block}
+%\begin{block}
+
+%\small
+%Для сравнения результатов алгоритма извлечения ЦВЗ предложенного метода также используется оценка:
+%$$ES = \sqrt{\frac{K}{\sum_{k = 1}^{K}\frac{1}{S_k^2}}}$$
+%\end{block}
+\end{frame}
+%10----------------------------------------------------
+\begin{frame}{Описание эксперимента}
+\small
+\begin{itemize}
+\item Текст: 14 строк, 13 межстрочных интервалов, кегль шрифта 14 пт, множитель межстрочного интервала 1.15, масштаб текста 100\%
+\item Монитор AOC-i2769Vm: диагональ 27 дюймов, разрешение $1920\times 1080$ пикселей, тип матрицы IPS
+\item Камера смартфона Samsung Galaxy S8: 12 мегапикселей, апертура f/1.7, фокусное расстояние 26 мм
+\item Во все межстрочные интервалы текста встраивалась одинаковая цифровая метка, состоящая из 24 бит
+
+\end{itemize}
+\center{\includegraphics[width=0.7\linewidth]{0102.jpg}}
+\end{frame}
+%11---------------------------------------------------------------------------------
+\begin{frame}{Результаты тестирования}
+\begin{adjustwidth}{-0.5cm}{-0.5cm}
+Извлекаемость оценивалась с помощью
+\begin{itemize}
+\item  Оценка BER-24 рассчитывалась после комбинирования меток, извлеченных из разных межстрочных интервалов
+\item Оценка BER-312 рассчитывалась при предположении, что биты, встроенные в разные межстрочные интервалы, независимы
+\item BER-24 = 0 и BER-312 < 15\% --- метка извлечена успешно
+\item BER-24 > 0 или BER-312  $\geqslant 15\%$ --- метка извлечена с ошибками
+\end{itemize}
+\footnotesize
+\begin{center}
+\begin{table}[h]
+\newcolumntype{g}{>{\centering\arraybackslash\columncolor{lightGreen}}p{8em}}
+\newcolumntype{y}{>{\centering\arraybackslash\columncolor{lightYellow}}p{8em}}
+\newcolumntype{r}{>{\centering\arraybackslash\columncolor{lightRed}}p{8em}}
+\begin{tabular}[t]{||>{\centering\arraybackslash}p{8em}|g|y|r||}
+\hline
+\multirow{2}{*}{Эксперимент} & Метка успешно& Метка извлечена& Метка не\\
+ &извлечена & с ошибками & обнаружена \\
+\hline
+Непрозрачность & & & \\
+маркеров & \multirow{-2}{*}{$\geqslant3\%$} & \multirow{-2}{*}{--} & \multirow{-2}{*}{$<3\%$}\\
+\hline
+Расстояние от &  & & \\
+ камеры до & & 50 см & $\leqslant 25$ см \\
+экрана &\multirow{-3}{4.5em}{ 30--40 см, 60--100 см} & & \\
+\hline
+Угол между & & & \\
+камерой и&$\leqslant 45^{\circ}$&$60^{\circ} $& $\geqslant 75^{\circ}$ \\
+экраном & & & \\ 
+\hline
+Коэффициент & & & \\
+качества JPEG & \multirow{-2}{*}{20--100} &\multirow{-2}{*}{15} &\multirow{-2}{*}{ $\leqslant 10$ }\\
+\hline
+\end{tabular}
+\end{table}
+\end{center}
+%\center{\includegraphics[width=0.7\linewidth]{5350.jpg}}
+\end{adjustwidth}
+\end{frame}
+%12-----------------------------------------------------------------------------------------------------
+\begin{frame}{Заключение}
+\begin{block}{Полученные результаты}
+	\begin{itemize}
+\item Разработан и реализован алгоритм маркирования текстовых документов, отображаемых на экране монитора.
+\item Разработан и реализован алгоритм извлечения цифровой метки с фотографии экрана.
+\item Метод показал высокие результаты устойчивости к атакам сценария screen-cam.
+	\end{itemize}
+\end{block}
+\begin{block}{Дальнейшие исследования}
+	\begin{itemize}
+\item Развитие и оптимизация предложенного метода
+\item Тестирование метода при других конфигурациях экран/камера
+\item Разработка альтернативных схем маркирования текстовых документов
+	\end{itemize}
+\end{block}
+\begin{block}{К публикации}
+Планируется публикация по теме диплома.
+\end{block}
+\end{frame}
+\end{document} 
